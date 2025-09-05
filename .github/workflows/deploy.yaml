@@ -23,6 +23,9 @@ on:
           - dev
           - test
           - prod
+    # Add the branch where workflow will run
+    branches:
+      - main
 
 jobs:
   deploy:
