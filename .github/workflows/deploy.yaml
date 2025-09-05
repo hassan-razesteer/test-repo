@@ -1,4 +1,4 @@
-name: Manual Deployment with Package, Version, and Env
+name: Manual Deployment with Multiple Packages and Versions
 
 on:
   workflow_dispatch:
@@ -8,17 +8,26 @@ on:
         required: true
         type: choice
         options:
-          - java
+          - node
+          - react
           - daml
-          - react-node
       version:
         description: "Select version to deploy"
         required: true
         type: choice
         options:
-          - v1.0.0
-          - v1.1.0
-          - v2.0.0
+          # Node versions
+          - node-v1.0.0
+          - node-v1.1.0
+          - node-v2.0.0
+          # React versions
+          - react-v1.0.0
+          - react-v1.1.0
+          - react-v2.0.0
+          # DAML versions
+          - daml-v1.0.0
+          - daml-v1.1.0
+          - daml-v2.0.0
       environment:
         description: "Select environment"
         required: true
@@ -38,20 +47,20 @@ jobs:
           echo "Version: ${{ github.event.inputs.version }}"
           echo "Environment: ${{ github.event.inputs.environment }}"
 
-      # Dev deployment block
-      - name: Deploy to Dev
-        if: ${{ github.event.inputs.environment == 'dev' }}
+      # Node deployment block
+      - name: Deploy Node
+        if: ${{ github.event.inputs.package == 'node' && startsWith(github.event.inputs.version, 'node-') }}
         run: |
-          echo "🚀 Deploying ${{ github.event.inputs.package }} version ${{ github.event.inputs.version }} to DEV server..."
+          echo "🚀 Deploying NODE app version ${{ github.event.inputs.version }} to ${{ github.event.inputs.environment }}"
 
-      # Test deployment block
-      - name: Deploy to Test
-        if: ${{ github.event.inputs.environment == 'test' }}
+      # React deployment block
+      - name: Deploy React
+        if: ${{ github.event.inputs.package == 'react' && startsWith(github.event.inputs.version, 'react-') }}
         run: |
-          echo "🚀 Deploying ${{ github.event.inputs.package }} version ${{ github.event.inputs.version }} to TEST server..."
+          echo "🚀 Deploying REACT app version ${{ github.event.inputs.version }} to ${{ github.event.inputs.environment }}"
 
-      # Prod deployment block
-      - name: Deploy to Prod
-        if: ${{ github.event.inputs.environment == 'prod' }}
+      # DAML deployment block
+      - name: Deploy DAML
+        if: ${{ github.event.inputs.package == 'daml' && startsWith(github.event.inputs.version, 'daml-') }}
         run: |
-          echo "🚀 Deploying ${{ github.event.inputs.package }} version ${{ github.event.inputs.version }} to PROD server..."
+          echo "🚀 Deploying DAML app version ${{ github.event.inputs.version }} to ${{ github.event.inputs.environment }}"
