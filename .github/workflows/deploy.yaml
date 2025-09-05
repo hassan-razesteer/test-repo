@@ -1,0 +1,35 @@
+name: Manual Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Select the package to deploy"
+        required: true
+        type: choice
+        options:
+          - java
+          - daml
+          - react-node
+      version:
+        description: "Enter the version to deploy"
+        required: true
+        default: "v1.0.0"
+      environment:
+        description: "Select environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show Inputs
+        run: |
+          echo "Package: ${{ github.event.inputs.package }}"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Environment: ${{ github.event.inputs.environment }}"
