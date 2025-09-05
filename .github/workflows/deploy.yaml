@@ -1,4 +1,4 @@
-name: Manual Deployment
+name: Manual Deployment with Package, Version, and Env
 
 on:
   workflow_dispatch:
@@ -12,9 +12,13 @@ on:
           - daml
           - react-node
       version:
-        description: "Enter the version to deploy"
+        description: "Select version to deploy"
         required: true
-        default: "v1.0.0"
+        type: choice
+        options:
+          - v1.0.0
+          - v1.1.0
+          - v2.0.0
       environment:
         description: "Select environment"
         required: true
@@ -23,9 +27,6 @@ on:
           - dev
           - test
           - prod
-    # Add the branch where workflow will run
-    branches:
-      - main
 
 jobs:
   deploy:
@@ -36,3 +37,21 @@ jobs:
           echo "Package: ${{ github.event.inputs.package }}"
           echo "Version: ${{ github.event.inputs.version }}"
           echo "Environment: ${{ github.event.inputs.environment }}"
+
+      # Dev deployment block
+      - name: Deploy to Dev
+        if: ${{ github.event.inputs.environment == 'dev' }}
+        run: |
+          echo "🚀 Deploying ${{ github.event.inputs.package }} version ${{ github.event.inputs.version }} to DEV server..."
+
+      # Test deployment block
+      - name: Deploy to Test
+        if: ${{ github.event.inputs.environment == 'test' }}
+        run: |
+          echo "🚀 Deploying ${{ github.event.inputs.package }} version ${{ github.event.inputs.version }} to TEST server..."
+
+      # Prod deployment block
+      - name: Deploy to Prod
+        if: ${{ github.event.inputs.environment == 'prod' }}
+        run: |
+          echo "🚀 Deploying ${{ github.event.inputs.package }} version ${{ github.event.inputs.version }} to PROD server..."
